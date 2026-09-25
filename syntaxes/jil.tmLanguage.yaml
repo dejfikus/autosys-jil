@@ -6,13 +6,26 @@ patterns:
 repository:
   keywords:
     patterns:
-      - match: "(\
-          (?<=job_type:\\s+)\\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW)\\b\
-          |(?<=days_of_week:.*)\\b(mo|tu|we|th|fr)\\b\
-          |(?<=condition:.*)s\\(.+?\\)\
-          |(?<=permission:.*)\\b(gx|ge|wx|we|mx|me)\\b\
-          )"
-        name: constant.language
+      - begin: '(?<=job_type:)'
+        end: '$'
+        patterns:
+          - match: '\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW)\b'
+            name: constant.language
+      - begin: '(?<=days_of_week:)'
+        end: '$'
+        patterns:
+          - match: '\b(mo|tu|we|th|fr|sa|su)\b'
+            name: constant.language
+      - begin: '(?<=condition:)'
+        end: '$'
+        patterns:
+          - match: 's\(.+?\)'
+            name: constant.language
+      - begin: '(?<=permission:)'
+        end: '$'
+        patterns:
+          - match: '\b(gx|ge|wx|we|mx|me)\b'
+            name: constant.language
       - match: "#.*$"
         name: comment.line.number-sign.jil
       - match: \b[0-9]+\b
@@ -32,7 +45,7 @@ repository:
           |permission|priority\
           |resources|run_calendar|run_window\
           |send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev\
-          |alarm_if_terminated|notification_template|notification_emailaddress_on_failure|notification_template|notification_alarm_types\
+          |alarm_if_terminated|notification_template|notification_emailaddress_on_failure|notification_alarm_types\
           |term_run_time|timezone\
           )\\b\
           (?=:)"

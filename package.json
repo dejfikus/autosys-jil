@@ -1,13 +1,13 @@
 {
-    "name": "jil-highlighter",
-    "displayName": "JIL Highlighter",
+    "name": "jil-highlite",
+    "displayName": "JIL Highlite",
     "description": "Highlights Autosys JIL syntax",
     "icon": "images/jil-highlighter-icon.png",
-    "publisher": "chnicholas",
+    "publisher": "czdrager",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/chnicholas/jil-highlighter"
+        "url": "https://github.com/dejfikus/autosys-jil"
     },    
     "version": "0.1.0",
     "engines": {
