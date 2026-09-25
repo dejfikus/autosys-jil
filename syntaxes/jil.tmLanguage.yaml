@@ -9,7 +9,7 @@ repository:
       - begin: '(?<=job_type:)'
         end: '$'
         patterns:
-          - match: '\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW)\b'
+          - match: '\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW|pojo|POJO)\b'
             name: constant.language
       - begin: '(?<=days_of_week:)'
         end: '$'
@@ -47,6 +47,7 @@ repository:
           |send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev\
           |alarm_if_terminated|notification_template|notification_emailaddress_on_failure|notification_alarm_types\
           |term_run_time|timezone\
+          |notification_emailaddress_on_alarm|notification_emailaddress|max_exit_success|box_success|class_name|j2ee_parameter|method_name\
           )\\b\
           (?=:)"
         name: keyword.control.jil
