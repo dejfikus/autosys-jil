@@ -1,6 +1,6 @@
 {
     "name": "jil-highlite",
-    "displayName": "JIL Highlite",
+    "displayName": "Autosys JIL Highlite",
     "description": "Highlights Autosys JIL syntax",
     "icon": "images/jil-highlighter-icon.png",
     "publisher": "czdrager",
@@ -9,7 +9,7 @@
         "type": "git",
         "url": "https://github.com/dejfikus/autosys-jil"
     },    
-    "version": "0.1.2",
+    "version": "0.1.3",
     "engines": {
         "vscode": "^1.45.0"
     },

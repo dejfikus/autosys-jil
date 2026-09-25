@@ -48,6 +48,7 @@ repository:
           |alarm_if_terminated|notification_template|notification_emailaddress_on_failure|notification_alarm_types\
           |term_run_time|timezone\
           |notification_emailaddress_on_alarm|notification_emailaddress|max_exit_success|box_success|class_name|j2ee_parameter|method_name\
+          |success_codes|watch_file|watch_file_change_value|watch_file_recursive|watch_file_type|watch_file_win_user|watch_file_change_type|watch_no_change|continuous\
           )\\b\
           (?=:)"
         name: keyword.control.jil
