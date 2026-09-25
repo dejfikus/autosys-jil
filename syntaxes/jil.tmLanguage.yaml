@@ -37,7 +37,7 @@ repository:
           |date_conditions|days_of_week|description\
           |exclude_calendar\
           |group\
-          |insert_job\
+          |insert_job|update_job\
           |job_load|job_type\
           |machine|max_run_alarm|min_run_alarm|must_complete_times|must_start_times\
           |n_retrys|notification_id|notification_msg\
@@ -52,7 +52,7 @@ repository:
         name: keyword.control.jil
       - match: (\||&|and|or)
         name: keyword.operator.jil
-      - match: ((?<=command:)\s+.*|(?<=insert_job:)\s+.*(?=job_type:))
+      - match: ((?<=command:)\s+.*|(?<=insert_job:|update_job:)\s+.*(?=job_type:))
         name: variable.parameter.jil
   strings:
     begin: '"'

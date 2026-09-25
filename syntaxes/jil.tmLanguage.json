@@ -61,7 +61,7 @@
           "name": "constant.numeric"
         },
         {
-          "match": "\\b(alarm_if_fail|application|auto_delete|auto_hold|avg_runtime|box_name|box_terminator|command|condition|date_conditions|days_of_week|description|exclude_calendar|group|insert_job|job_load|job_type|machine|max_run_alarm|min_run_alarm|must_complete_times|must_start_times|n_retrys|notification_id|notification_msg|owner|permission|priority|resources|run_calendar|run_window|send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev|alarm_if_terminated|notification_template|notification_emailaddress_on_failure|notification_alarm_types|term_run_time|timezone)\\b(?=:)",
+          "match": "\\b(alarm_if_fail|application|auto_delete|auto_hold|avg_runtime|box_name|box_terminator|command|condition|date_conditions|days_of_week|description|exclude_calendar|group|insert_job|update_job|job_load|job_type|machine|max_run_alarm|min_run_alarm|must_complete_times|must_start_times|n_retrys|notification_id|notification_msg|owner|permission|priority|resources|run_calendar|run_window|send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev|alarm_if_terminated|notification_template|notification_emailaddress_on_failure|notification_alarm_types|term_run_time|timezone)\\b(?=:)",
           "name": "keyword.control.jil"
         },
         {
@@ -69,7 +69,7 @@
           "name": "keyword.operator.jil"
         },
         {
-          "match": "((?<=command:)\\s+.*|(?<=insert_job:)\\s+.*(?=job_type:))",
+          "match": "((?<=command:)\\s+.*|(?<=insert_job:|update_job:)\\s+.*(?=job_type:))",
           "name": "variable.parameter.jil"
         }
       ]
