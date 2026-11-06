@@ -17,7 +17,7 @@ repository:
       - begin: '(?<=job_type:)'
         end: '$'
         patterns:
-          - match: '\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW|pojo|POJO|sql|SQL|omp|OMP)\b'
+          - match: '\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW|pojo|POJO|scp|SCP|ftp|FTP|sftp|SFTP|sql|SQL|omp|OMP|i5|I5|bw|BW|sap|SAP|http|HTTP|jms|JMS|ejb|EJB|ws|WS)\b'
             name: constant.language
       - begin: '(?<=days_of_week:)'
         end: '$'
@@ -54,6 +54,7 @@ repository:
           |owner\
           |permission|priority|profile\
           |rename_job|resources|run_calendar|run_window\
+          |scp_command|scp_local_dir|scp_local_name|scp_local_user|scp_protocol|scp_remote_dir|scp_remote_name|scp_server|scp_server_port|scp_target_os|scp_transfer_direction|scp_user\
           |send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|std_in_file|success_codes|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev\
           |term_run_time|timezone\
           |update_job|update_machine|update_resource\

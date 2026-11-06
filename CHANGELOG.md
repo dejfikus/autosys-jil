@@ -4,6 +4,11 @@ All notable changes to the "Autosys JIL Highlite" extension will be documented i
 
 <!-- Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file. -->
 
+## [1.0.1]
+- **Added `SCP` Job Type & Attributes**: Added `SCP` (along with `FTP`, `SFTP`, `I5`, `BW`, `SAP`, `HTTP`, `JMS`, `EJB`, `WS`) to valid `job_type` highlighting, linter validation, IntelliSense auto-complete, and the Visual Job Flow Graph.
+- **SCP Attributes & Snippet**: Added syntax highlighting and hover/IntelliSense docs for `scp_*` attributes (`scp_server`, `scp_server_port`, `scp_remote_dir`, `scp_remote_name`, `scp_local_dir`, `scp_local_name`, `scp_user`, `scp_local_user`, `scp_transfer_direction`, `scp_protocol`, `scp_target_os`) plus a new `scp_job` snippet.
+- **Documentation**: Expanded `README.md` with a complete guide covering all available features in v1.0.1.
+
 ## [0.2.0]
 - **Interactive Visual Job Flow Graph**: Click the graph icon in the top-right editor toolbar (or run `AutoSys JIL: Open Visual Job Flow Graph`) to see an interactive diagram of all Boxes, Jobs, and `condition:` dependency arrows (`s()`, `f()`, `t()`, `d()`, `n()`). Click any node to jump straight to its JIL line!
 - **Document Outline & Breadcrumbs**: Browse a hierarchical tree of all Boxes and child Jobs in VS Code's Outline sidebar and `Ctrl+Shift+O` (`Go to Symbol`).

@@ -4,7 +4,7 @@ const vscode = require('vscode');
 const JIL_ATTRIBUTES = {
   insert_job: {
     summary: 'Defines a new job in the AutoSys database.',
-    syntax: 'insert_job: job_name   job_type: CMD | BOX | FW | FT | POJO',
+    syntax: 'insert_job: job_name   job_type: CMD | BOX | FW | FT | POJO | SCP | FTP',
     example: 'insert_job: DAILY_ETL_JOB   job_type: CMD'
   },
   update_job: {
@@ -29,9 +29,9 @@ const JIL_ATTRIBUTES = {
   },
   job_type: {
     summary: 'Specifies the type of job to create.',
-    values: ['CMD (Command)', 'BOX (Box container)', 'FW (File Watcher)', 'FT (File Trigger)', 'POJO (Java POJO)', 'SQL', 'OMP'],
-    syntax: 'job_type: CMD | BOX | FW | FT | POJO',
-    example: 'job_type: CMD'
+    values: ['CMD (Command)', 'BOX (Box container)', 'FW (File Watcher)', 'FT (File Trigger)', 'POJO (Java POJO)', 'SCP (Secure Copy)', 'FTP / SFTP', 'SQL', 'OMP'],
+    syntax: 'job_type: CMD | BOX | FW | FT | POJO | SCP | FTP | SQL | OMP',
+    example: 'job_type: SCP'
   },
   box_name: {
     summary: 'Places this job inside the specified Box container job.',
@@ -364,6 +364,64 @@ const JIL_ATTRIBUTES = {
     summary: 'Virtual resource dependencies required before the job can run.',
     syntax: 'resources: (RES_NAME, QUANTITY=1, FREE=Y)',
     example: 'resources: (DB_CONN_POOL, QUANTITY=1, FREE=Y)'
+  },
+  scp_transfer_direction: {
+    summary: 'Transfer direction for an `SCP` job (`UPLOAD` or `DOWNLOAD`, or `ASC`/`BIN`).',
+    values: ['UPLOAD', 'DOWNLOAD'],
+    syntax: 'scp_transfer_direction: UPLOAD | DOWNLOAD',
+    example: 'scp_transfer_direction: DOWNLOAD'
+  },
+  scp_server: {
+    summary: 'Remote server hostname or IP address for an `SCP` file transfer job.',
+    syntax: 'scp_server: hostname',
+    example: 'scp_server: sftp.partner.com'
+  },
+  scp_server_port: {
+    summary: 'Remote SSH/SCP port number (default is `22`).',
+    syntax: 'scp_server_port: port',
+    example: 'scp_server_port: 22'
+  },
+  scp_remote_dir: {
+    summary: 'Remote directory path on the SCP server.',
+    syntax: 'scp_remote_dir: "/remote/path"',
+    example: 'scp_remote_dir: "/incoming/feeds"'
+  },
+  scp_remote_name: {
+    summary: 'Remote file name on the SCP server.',
+    syntax: 'scp_remote_name: "filename"',
+    example: 'scp_remote_name: "daily_extract.csv"'
+  },
+  scp_local_dir: {
+    summary: 'Local directory path on the agent machine for an `SCP` transfer.',
+    syntax: 'scp_local_dir: "/local/path"',
+    example: 'scp_local_dir: "/data/staging"'
+  },
+  scp_local_name: {
+    summary: 'Local file name on the agent machine for an `SCP` transfer.',
+    syntax: 'scp_local_name: "/local/path/filename"',
+    example: 'scp_local_name: "/data/staging/daily_extract.csv"'
+  },
+  scp_user: {
+    summary: 'Remote user account used to authenticate with the SCP server.',
+    syntax: 'scp_user: username',
+    example: 'scp_user: svc_scp_xfer'
+  },
+  scp_local_user: {
+    summary: 'Local user account on the agent machine executing the SCP transfer.',
+    syntax: 'scp_local_user: username',
+    example: 'scp_local_user: batchusr'
+  },
+  scp_target_os: {
+    summary: 'Operating system type of the remote SCP server (`UNIX`, `WINDOWS`, etc.).',
+    values: ['UNIX', 'WINDOWS'],
+    syntax: 'scp_target_os: UNIX | WINDOWS',
+    example: 'scp_target_os: UNIX'
+  },
+  scp_protocol: {
+    summary: 'Protocol used for secure transfer (`SCP` or `SFTP`).',
+    values: ['SCP', 'SFTP'],
+    syntax: 'scp_protocol: SCP | SFTP',
+    example: 'scp_protocol: SFTP'
   }
 };
 
@@ -509,6 +567,8 @@ function normalizeJobType(val) {
   if (upper === 'FW') return 'FW';
   if (upper === 'FT') return 'FT';
   if (upper === 'POJO') return 'POJO';
+  if (upper === 'SCP') return 'SCP';
+  if (upper === 'FTP' || upper === 'SFTP') return upper;
   return upper || 'CMD';
 }
 
@@ -684,7 +744,7 @@ class JilCompletionProvider {
       const jobs = parseJilDocument(document);
 
       if (attrName === 'job_type') {
-        return ['CMD', 'BOX', 'FW', 'FT', 'POJO', 'SQL', 'OMP'].map((t) => {
+        return ['CMD', 'BOX', 'FW', 'FT', 'POJO', 'SCP', 'FTP', 'SFTP', 'SQL', 'OMP'].map((t) => {
           const item = new vscode.CompletionItem(t, vscode.CompletionItemKind.EnumMember);
           item.detail = `AutoSys ${t} job type`;
           return item;
@@ -776,7 +836,7 @@ class JilCompletionProvider {
       );
       if (key === 'insert_job') {
         item.insertText = new vscode.SnippetString(
-          'insert_job: ${1:JOB_NAME}   job_type: ${2|CMD,BOX,FW,FT,POJO|}'
+          'insert_job: ${1:JOB_NAME}   job_type: ${2|CMD,BOX,FW,FT,POJO,SCP,FTP|}'
         );
       } else {
         item.insertText = new vscode.SnippetString(`${key}: $0`);
@@ -793,7 +853,8 @@ const VALID_JOB_TYPES = new Set([
   'B', 'BOX',
   'C', 'CMD',
   'FW', 'FT',
-  'POJO', 'SQL', 'OMP'
+  'POJO', 'SCP', 'FTP', 'SFTP',
+  'SQL', 'OMP', 'I5', 'BW', 'SAP', 'HTTP', 'JMS', 'EJB', 'WS'
 ]);
 
 const VALID_DAYS = new Set(['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su', 'all']);
@@ -851,7 +912,7 @@ function validateJilDocument(document, diagnosticCollection) {
               jobTypeAttr.line,
               jobTypeAttr.valueEnd
             ),
-            `Unknown job_type '${jobTypeAttr.value}'. Expected CMD, BOX, FW, FT, POJO, SQL, or OMP.`,
+            `Unknown job_type '${jobTypeAttr.value}'. Expected CMD, BOX, FW, FT, POJO, SCP, FTP, SFTP, SQL, or OMP.`,
             vscode.DiagnosticSeverity.Error
           )
         );
@@ -1100,6 +1161,7 @@ function buildGraphWebviewHtml(jobs, docUri, fileName) {
     --cmd-accent: #38bdf8;
     --fw-accent: #a855f7;
     --pojo-accent: #10b981;
+    --scp-accent: #ec4899;
     --ext-accent: #64748b;
     --s-color: #22c55e;
     --f-color: #ef4444;
@@ -1284,6 +1346,7 @@ function buildGraphWebviewHtml(jobs, docUri, fileName) {
   .job-card.type-CMD { border-left-color: var(--cmd-accent); }
   .job-card.type-FW, .job-card.type-FT { border-left-color: var(--fw-accent); }
   .job-card.type-POJO { border-left-color: var(--pojo-accent); }
+  .job-card.type-SCP, .job-card.type-FTP, .job-card.type-SFTP { border-left-color: var(--scp-accent); }
   .job-card.type-EXT {
     border-left-color: var(--ext-accent);
     border-style: dashed;
@@ -1356,6 +1419,7 @@ function buildGraphWebviewHtml(jobs, docUri, fileName) {
     <div class="legend-item"><span class="dot" style="background: var(--cmd-accent)"></span> CMD Job</div>
     <div class="legend-item"><span class="dot" style="background: var(--fw-accent)"></span> FW / FT Watcher</div>
     <div class="legend-item"><span class="dot" style="background: var(--pojo-accent)"></span> POJO Job</div>
+    <div class="legend-item"><span class="dot" style="background: var(--scp-accent)"></span> SCP / FTP Job</div>
     <div class="legend-item"><span class="dot" style="background: var(--s-color)"></span> s() Success</div>
     <div class="legend-item"><span class="dot" style="background: var(--f-color)"></span> f() Failure</div>
     <div class="legend-item"><span class="dot" style="background: var(--d-color)"></span> d() Done</div>

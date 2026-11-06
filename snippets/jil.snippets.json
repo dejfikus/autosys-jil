@@ -73,6 +73,27 @@
     ],
     "description": "Insert an AutoSys POJO Java job template"
   },
+  "Insert SCP Job (SCP)": {
+    "prefix": ["scp_job", "insert_scp"],
+    "body": [
+      "/* ----------------- ${1:SCP_JOB_NAME} ----------------- */",
+      "insert_job: ${1:SCP_JOB_NAME}   job_type: SCP",
+      "box_name: ${2:BOX_NAME}",
+      "machine: ${3:localhost}",
+      "owner: ${4:user@host}",
+      "scp_transfer_direction: ${5|DOWNLOAD,UPLOAD|}",
+      "scp_server: ${6:sftp.example.com}",
+      "scp_server_port: ${7:22}",
+      "scp_user: ${8:remote_user}",
+      "scp_remote_dir: \"${9:/remote/dir}\"",
+      "scp_remote_name: \"${10:file.txt}\"",
+      "scp_local_name: \"${11:/local/dir/file.txt}\"",
+      "description: \"${12:SCP file transfer job}\"",
+      "alarm_if_fail: ${13|1,0|}",
+      "$0"
+    ],
+    "description": "Insert an AutoSys Secure Copy (SCP) file transfer job template"
+  },
   "Update Existing Job": {
     "prefix": ["update_job", "upd_job"],
     "body": [

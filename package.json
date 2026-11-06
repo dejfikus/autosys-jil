@@ -1,7 +1,7 @@
 {
     "name": "jil-highlite",
     "displayName": "Autosys JIL Highlite",
-    "description": "AutoSys JIL syntax highlighting, IntelliSense, hover docs, linter, snippets, document outline, and interactive visual job flow graph.",
+    "description": "Complete AutoSys JIL language support: syntax highlighting, Interactive Visual Job Flow Graph, Document Outline, Hover Docs, Context-Aware IntelliSense, Real-Time Linter, and Job Snippets.",
     "icon": "images/jil-highlighter-icon.png",
     "publisher": "czdrager",
     "license": "MIT",
@@ -9,7 +9,7 @@
         "type": "git",
         "url": "https://github.com/dejfikus/autosys-jil"
     },
-    "version": "0.2.0",
+    "version": "1.0.1",
     "engines": {
         "vscode": "^1.45.0"
     },
