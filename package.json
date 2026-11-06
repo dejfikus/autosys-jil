@@ -1,31 +1,43 @@
 {
     "name": "jil-highlite",
     "displayName": "Autosys JIL Highlite",
-    "description": "Highlights Autosys JIL syntax",
+    "description": "AutoSys JIL syntax highlighting, IntelliSense, hover docs, linter, snippets, document outline, and interactive visual job flow graph.",
     "icon": "images/jil-highlighter-icon.png",
     "publisher": "czdrager",
     "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/dejfikus/autosys-jil"
-    },    
-    "version": "0.1.3",
+    },
+    "version": "0.2.0",
     "engines": {
         "vscode": "^1.45.0"
     },
+    "main": "./extension.js",
+    "activationEvents": [
+        "onLanguage:jil",
+        "onCommand:jil.showJobGraph"
+    ],
     "categories": [
-        "Programming Languages"
+        "Programming Languages",
+        "Linters",
+        "Snippets",
+        "Visualization"
     ],
     "keywords": [
         "autosys",
-        "jil"
+        "jil",
+        "workload automation",
+        "scheduler",
+        "broadcom",
+        "ca workload automation"
     ],
     "contributes": {
         "languages": [
             {
                 "id": "jil",
                 "aliases": [
-                    "jil",
+                    "AutoSys JIL",
                     "jil"
                 ],
                 "extensions": [
@@ -40,7 +52,37 @@
                 "scopeName": "scope.jil",
                 "path": "./syntaxes/jil.tmLanguage.json"
             }
-        ]
+        ],
+        "snippets": [
+            {
+                "language": "jil",
+                "path": "./snippets/jil.snippets.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "jil.showJobGraph",
+                "title": "AutoSys JIL: Open Visual Job Flow Graph",
+                "category": "AutoSys JIL",
+                "icon": "$(type-hierarchy-sub)"
+            }
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "jil.showJobGraph",
+                    "when": "editorLangId == jil",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "jil.showJobGraph",
+                    "when": "editorLangId == jil",
+                    "group": "navigation"
+                }
+            ]
+        }
     },
     "devDependencies": {
         "js-yaml": "^3.14.0"

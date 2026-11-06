@@ -1,0 +1,86 @@
+{
+  "Insert Command Job (CMD)": {
+    "prefix": ["cmd_job", "insert_cmd", "insert_job_cmd"],
+    "body": [
+      "/* ----------------- ${1:JOB_NAME} ----------------- */",
+      "insert_job: ${1:JOB_NAME}   job_type: CMD",
+      "box_name: ${2:BOX_NAME}",
+      "command: ${3:/path/to/script.sh}",
+      "machine: ${4:localhost}",
+      "owner: ${5:user@host}",
+      "permission: ${6:gx,ge,wx}",
+      "date_conditions: ${7|1,0|}",
+      "days_of_week: ${8:mo,tu,we,th,fr}",
+      "start_times: \"${9:08:00}\"",
+      "condition: ${10:s(PREV_JOB)}",
+      "description: \"${11:Job description}\"",
+      "std_out_file: \"${12:/tmp/$1.out}\"",
+      "std_err_file: \"${13:/tmp/$1.err}\"",
+      "alarm_if_fail: ${14|1,0|}",
+      "alarm_if_terminated: ${15|1,0|}",
+      "$0"
+    ],
+    "description": "Insert a standard AutoSys Command (CMD) job template"
+  },
+  "Insert Box Job (BOX)": {
+    "prefix": ["box_job", "insert_box", "insert_job_box"],
+    "body": [
+      "/* ================= ${1:BOX_NAME} ================= */",
+      "insert_job: ${1:BOX_NAME}   job_type: BOX",
+      "owner: ${2:user@host}",
+      "permission: ${3:gx,ge,wx}",
+      "date_conditions: ${4|1,0|}",
+      "days_of_week: ${5:mo,tu,we,th,fr}",
+      "start_times: \"${6:07:00}\"",
+      "description: \"${7:Box container description}\"",
+      "alarm_if_fail: ${8|1,0|}",
+      "alarm_if_terminated: ${9|1,0|}",
+      "$0"
+    ],
+    "description": "Insert an AutoSys Box (BOX) container job template"
+  },
+  "Insert File Watcher Job (FW)": {
+    "prefix": ["fw_job", "insert_fw", "watch_job"],
+    "body": [
+      "/* ----------------- ${1:FW_JOB_NAME} ----------------- */",
+      "insert_job: ${1:FW_JOB_NAME}   job_type: FW",
+      "box_name: ${2:BOX_NAME}",
+      "machine: ${3:localhost}",
+      "owner: ${4:user@host}",
+      "watch_file: \"${5:/path/to/watched_file.txt}\"",
+      "watch_interval: ${6:60}",
+      "watch_no_change: ${7:5}",
+      "description: \"${8:File watcher job}\"",
+      "alarm_if_fail: ${9|1,0|}",
+      "$0"
+    ],
+    "description": "Insert an AutoSys File Watcher (FW) job template"
+  },
+  "Insert POJO Job (POJO)": {
+    "prefix": ["pojo_job", "insert_pojo"],
+    "body": [
+      "/* ----------------- ${1:POJO_JOB_NAME} ----------------- */",
+      "insert_job: ${1:POJO_JOB_NAME}   job_type: POJO",
+      "box_name: ${2:BOX_NAME}",
+      "machine: ${3:localhost}",
+      "owner: ${4:user@host}",
+      "class_name: \"${5:com.example.MyClass}\"",
+      "method_name: \"${6:execute}\"",
+      "j2ee_parameter: \"${7:java.lang.String=value}\"",
+      "description: \"${8:POJO Java job}\"",
+      "alarm_if_fail: ${9|1,0|}",
+      "$0"
+    ],
+    "description": "Insert an AutoSys POJO Java job template"
+  },
+  "Update Existing Job": {
+    "prefix": ["update_job", "upd_job"],
+    "body": [
+      "/* ----------------- Update ${1:JOB_NAME} ----------------- */",
+      "update_job: ${1:JOB_NAME}",
+      "${2:command}: ${3:new_value}",
+      "$0"
+    ],
+    "description": "Update an existing AutoSys job"
+  }
+}
