@@ -4,6 +4,12 @@ All notable changes to the "Autosys JIL Highlite" extension will be documented i
 
 <!-- Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file. -->
 
+## [1.0.2]
+- **Critical Syntax Highlighting Fix**: Fixed a variable-length lookbehind (`(?<=condition:|box_success:|box_failure:)`) that caused VS Code's Oniguruma regex engine to abort highlighting `insert_job:`, `box_name:`, `machine:`, `owner:`, etc.
+- **Unclosed String Recovery**: Restricted double-quoted strings to a single line (`end: '"|$'`) so a single unclosed quote in a `command:` line doesn't turn the rest of a 300,000-line `.jil` file into a string.
+- **Added `PS` (PeopleSoft) Job Type & Attributes**: Added `PS` to valid `job_type` values and added `ps_*` (`ps_process_name`, `ps_process_type`, `ps_operator_id`, `ps_run_cntrl_id`, `ps_server_name`, etc.), `scp_*` (`scp_server_name`, `scp_transfer_mode`, `scp_create_targetdir`, `scp_delete_sourcefile`, `scp_delete_sourcedir`), `external_os_user`, and `run_external` attributes.
+- **Improved Linter Accuracy**: Fixed `command:` lines containing colons (`D\:\` or `-start\:`) being misparsed as attributes, excluded `run_window` from requiring `date_conditions: 1`, and softened inactive schedule notices to informational hints.
+
 ## [1.0.1]
 - **Added `SCP` Job Type & Attributes**: Added `SCP` (along with `FTP`, `SFTP`, `I5`, `BW`, `SAP`, `HTTP`, `JMS`, `EJB`, `WS`) to valid `job_type` highlighting, linter validation, IntelliSense auto-complete, and the Visual Job Flow Graph.
 - **SCP Attributes & Snippet**: Added syntax highlighting and hover/IntelliSense docs for `scp_*` attributes (`scp_server`, `scp_server_port`, `scp_remote_dir`, `scp_remote_name`, `scp_local_dir`, `scp_local_name`, `scp_user`, `scp_local_user`, `scp_transfer_direction`, `scp_protocol`, `scp_target_os`) plus a new `scp_job` snippet.

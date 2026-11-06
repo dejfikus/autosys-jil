@@ -474,80 +474,90 @@ function parseJilDocument(document) {
       continue;
     }
 
-    // Match all key: value pairs on the line (handles `insert_job: NAME job_type: CMD`)
-    const attrRegex = /\b([a-zA-Z0-9_]+)\s*:\s*/g;
-    const matches = [];
-    let match;
-    while ((match = attrRegex.exec(line)) !== null) {
-      matches.push({
-        key: match[1],
-        keyStart: match.index,
-        valueStart: attrRegex.lastIndex
-      });
+    // Handle job header lines: `insert_job: NAME   job_type: CMD`
+    const headerMatch = line.match(
+      /^(\s*)(insert_job|update_job|delete_job|delete_box|rename_job)\s*:\s*([^\s]+)(?:(\s+)(job_type)\s*:\s*([^\s]+))?/
+    );
+    if (headerMatch) {
+      if (currentJob) {
+        currentJob.endLine = Math.max(currentJob.startLine, lineIdx - 1);
+        jobs.push(currentJob);
+      }
+      const leadLen = headerMatch[1].length;
+      const key = headerMatch[2];
+      const jobName = headerMatch[3];
+      const nameStart = line.indexOf(jobName, leadLen + key.length);
+      currentJob = {
+        name: jobName,
+        action: key,
+        jobType: key === 'delete_box' ? 'BOX' : 'CMD',
+        boxName: null,
+        command: null,
+        machine: null,
+        condition: null,
+        description: null,
+        startLine: lineIdx,
+        endLine: lineIdx,
+        nameRange: new vscode.Range(
+          lineIdx,
+          nameStart,
+          lineIdx,
+          nameStart + jobName.length
+        ),
+        attributes: {}
+      };
+
+      if (headerMatch[5] === 'job_type' && headerMatch[6]) {
+        const jtRaw = headerMatch[6].trim();
+        const jtKeyStart = line.indexOf('job_type', nameStart + jobName.length);
+        const jtValStart = line.indexOf(jtRaw, jtKeyStart + 8);
+        currentJob.jobType = normalizeJobType(jtRaw);
+        currentJob.attributes.job_type = {
+          value: jtRaw,
+          line: lineIdx,
+          keyStart: jtKeyStart,
+          keyEnd: jtKeyStart + 8,
+          valueStart: jtValStart,
+          valueEnd: jtValStart + jtRaw.length
+        };
+      }
+      continue;
     }
 
-    for (let i = 0; i < matches.length; i++) {
-      const current = matches[i];
-      const next = matches[i + 1];
-      const valueEnd = next ? next.keyStart : line.length;
-      const rawValue = line.slice(current.valueStart, valueEnd).trim();
-      const key = current.key;
+    // Single attribute per line (`attribute_name: value`)
+    const attrMatch = line.match(/^(\s*)([a-zA-Z0-9_]+)\s*:\s*(.*)$/);
+    if (attrMatch && currentJob) {
+      const keyStart = attrMatch[1].length;
+      const key = attrMatch[2];
+      const rawValue = attrMatch[3].trim();
+      const colonIdx = line.indexOf(':', keyStart + key.length);
+      const valueStart = rawValue
+        ? line.indexOf(rawValue, colonIdx + 1)
+        : colonIdx + 1;
+      const valueEnd = rawValue ? valueStart + rawValue.length : valueStart;
 
-      if (
-        key === 'insert_job' ||
-        key === 'update_job' ||
-        key === 'delete_job' ||
-        key === 'delete_box' ||
-        key === 'rename_job'
-      ) {
-        if (currentJob) {
-          currentJob.endLine = Math.max(currentJob.startLine, lineIdx - 1);
-          jobs.push(currentJob);
-        }
-        const jobName = rawValue.split(/\s+/)[0] || 'UNNAMED_JOB';
-        currentJob = {
-          name: jobName,
-          action: key,
-          jobType: key === 'delete_box' ? 'BOX' : 'CMD',
-          boxName: null,
-          command: null,
-          machine: null,
-          condition: null,
-          description: null,
-          startLine: lineIdx,
-          endLine: lineIdx,
-          nameRange: new vscode.Range(
-            lineIdx,
-            current.valueStart,
-            lineIdx,
-            current.valueStart + jobName.length
-          ),
-          attributes: {}
-        };
-      } else if (currentJob) {
-        currentJob.endLine = lineIdx;
-        currentJob.attributes[key] = {
-          value: rawValue,
-          line: lineIdx,
-          keyStart: current.keyStart,
-          keyEnd: current.keyStart + key.length,
-          valueStart: current.valueStart,
-          valueEnd
-        };
+      currentJob.endLine = lineIdx;
+      currentJob.attributes[key] = {
+        value: rawValue,
+        line: lineIdx,
+        keyStart,
+        keyEnd: keyStart + key.length,
+        valueStart,
+        valueEnd
+      };
 
-        if (key === 'job_type') {
-          currentJob.jobType = normalizeJobType(rawValue);
-        } else if (key === 'box_name') {
-          currentJob.boxName = rawValue.replace(/^"|"$/g, '').trim();
-        } else if (key === 'command') {
-          currentJob.command = rawValue;
-        } else if (key === 'machine') {
-          currentJob.machine = rawValue;
-        } else if (key === 'condition') {
-          currentJob.condition = rawValue;
-        } else if (key === 'description') {
-          currentJob.description = rawValue.replace(/^"|"$/g, '');
-        }
+      if (key === 'job_type') {
+        currentJob.jobType = normalizeJobType(rawValue);
+      } else if (key === 'box_name') {
+        currentJob.boxName = rawValue.replace(/^"|"$/g, '').trim();
+      } else if (key === 'command') {
+        currentJob.command = rawValue;
+      } else if (key === 'machine') {
+        currentJob.machine = rawValue;
+      } else if (key === 'condition') {
+        currentJob.condition = rawValue;
+      } else if (key === 'description') {
+        currentJob.description = rawValue.replace(/^"|"$/g, '');
       }
     }
   }
@@ -567,6 +577,7 @@ function normalizeJobType(val) {
   if (upper === 'FW') return 'FW';
   if (upper === 'FT') return 'FT';
   if (upper === 'POJO') return 'POJO';
+  if (upper === 'PS') return 'PS';
   if (upper === 'SCP') return 'SCP';
   if (upper === 'FTP' || upper === 'SFTP') return upper;
   return upper || 'CMD';
@@ -853,7 +864,7 @@ const VALID_JOB_TYPES = new Set([
   'B', 'BOX',
   'C', 'CMD',
   'FW', 'FT',
-  'POJO', 'SCP', 'FTP', 'SFTP',
+  'POJO', 'PS', 'SCP', 'FTP', 'SFTP',
   'SQL', 'OMP', 'I5', 'BW', 'SAP', 'HTTP', 'JMS', 'EJB', 'WS'
 ]);
 
@@ -960,8 +971,8 @@ function validateJilDocument(document, diagnosticCollection) {
       }
     }
 
-    // 4. Scheduling attributes used without date_conditions: 1 / y
-    const scheduleAttrs = ['days_of_week', 'start_times', 'start_mins', 'run_calendar', 'run_window'];
+    // 4. Scheduling attributes used without date_conditions: 1 / y (note: run_window works independently of date_conditions)
+    const scheduleAttrs = ['days_of_week', 'start_times', 'start_mins', 'run_calendar'];
     const presentScheduleAttrs = scheduleAttrs.filter((k) => job.attributes[k]);
     if (presentScheduleAttrs.length > 0 && job.action === 'insert_job') {
       const dc = job.attributes.date_conditions;
@@ -976,8 +987,8 @@ function validateJilDocument(document, diagnosticCollection) {
               firstSched.line,
               firstSched.valueEnd
             ),
-            `'${presentScheduleAttrs.join(', ')}' specified on '${job.name}', but 'date_conditions: 1' is missing or disabled. Schedule will be ignored by AutoSys.`,
-            vscode.DiagnosticSeverity.Warning
+            `'${presentScheduleAttrs.join(', ')}' specified on '${job.name}', but 'date_conditions: 1' is disabled. Schedule is currently inactive.`,
+            vscode.DiagnosticSeverity.Information
           )
         );
       }

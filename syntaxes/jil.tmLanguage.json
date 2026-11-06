@@ -33,7 +33,7 @@
           "end": "$",
           "patterns": [
             {
-              "match": "\\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW|pojo|POJO|scp|SCP|ftp|FTP|sftp|SFTP|sql|SQL|omp|OMP|i5|I5|bw|BW|sap|SAP|http|HTTP|jms|JMS|ejb|EJB|ws|WS)\\b",
+              "match": "\\b(b|box|BOX|c|cmd|CMD|ft|FT|fw|FW|pojo|POJO|ps|PS|scp|SCP|ftp|FTP|sftp|SFTP|sql|SQL|omp|OMP|i5|I5|bw|BW|sap|SAP|http|HTTP|jms|JMS|ejb|EJB|ws|WS)\\b",
               "name": "constant.language"
             }
           ]
@@ -49,7 +49,35 @@
           ]
         },
         {
-          "begin": "(?<=condition:|box_success:|box_failure:)",
+          "begin": "(?<=condition:)",
+          "end": "$",
+          "patterns": [
+            {
+              "match": "\\b(s|f|t|d|n|e|v|success|failure|terminated|done|notrunning|exitcode|value)\\s*\\([^)]+\\)",
+              "name": "constant.language"
+            },
+            {
+              "match": "(\\||&|\\b(and|or|AND|OR|not|NOT)\\b)",
+              "name": "keyword.operator.jil"
+            }
+          ]
+        },
+        {
+          "begin": "(?<=box_success:)",
+          "end": "$",
+          "patterns": [
+            {
+              "match": "\\b(s|f|t|d|n|e|v|success|failure|terminated|done|notrunning|exitcode|value)\\s*\\([^)]+\\)",
+              "name": "constant.language"
+            },
+            {
+              "match": "(\\||&|\\b(and|or|AND|OR|not|NOT)\\b)",
+              "name": "keyword.operator.jil"
+            }
+          ]
+        },
+        {
+          "begin": "(?<=box_failure:)",
           "end": "$",
           "patterns": [
             {
@@ -77,7 +105,7 @@
           "name": "constant.numeric"
         },
         {
-          "match": "\\b(alarm_if_fail|alarm_if_terminated|application|auto_delete|auto_hold|avg_runtime|box_failure|box_name|box_success|box_terminator|class_name|command|condition|continuous|date_conditions|days_of_week|delete_box|delete_job|delete_machine|description|elevated|envvars|exclude_calendar|fail_codes|ftp_local_name|ftp_remote_name|ftp_server|ftp_transfer_direction|ftp_transfer_type|ftp_user_type|group|heartbeat_interval|insert_box|insert_glob|insert_job|insert_machine|insert_monbro|insert_resource|interactive|j2ee_authentication_order|j2ee_conn_factory|j2ee_initial_context_factory|j2ee_jndi_user|j2ee_op_name|j2ee_parameter|j2ee_provider_url|job_load|job_terminator|job_type|machine|max_exit_success|max_run_alarm|method_name|min_run_alarm|must_complete_times|must_start_times|n_retrys|notification_alarm_types|notification_emailaddress|notification_emailaddress_on_alarm|notification_emailaddress_on_failure|notification_emailaddress_on_success|notification_emailaddress_on_terminated|notification_id|notification_msg|notification_template|owner|permission|priority|profile|rename_job|resources|run_calendar|run_window|scp_command|scp_local_dir|scp_local_name|scp_local_user|scp_protocol|scp_remote_dir|scp_remote_name|scp_server|scp_server_port|scp_target_os|scp_transfer_direction|scp_user|send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|std_in_file|success_codes|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev|term_run_time|timezone|update_job|update_machine|update_resource|watch_file|watch_file_change_type|watch_file_change_value|watch_file_min_size|watch_file_poll_interval|watch_file_recursive|watch_file_type|watch_file_win_user|watch_interval|watch_no_change)\\b(?=:)",
+          "match": "\\b(alarm_if_fail|alarm_if_terminated|application|auto_delete|auto_hold|avg_runtime|box_failure|box_name|box_success|box_terminator|class_name|command|condition|continuous|date_conditions|days_of_week|delete_box|delete_job|delete_machine|description|elevated|envvars|exclude_calendar|external_os_user|fail_codes|ftp_local_name|ftp_remote_name|ftp_server|ftp_transfer_direction|ftp_transfer_type|ftp_user_type|group|heartbeat_interval|insert_box|insert_glob|insert_job|insert_machine|insert_monbro|insert_resource|interactive|j2ee_authentication_order|j2ee_conn_factory|j2ee_initial_context_factory|j2ee_jndi_user|j2ee_op_name|j2ee_parameter|j2ee_provider_url|job_load|job_terminator|job_type|machine|max_exit_success|max_run_alarm|method_name|min_run_alarm|must_complete_times|must_start_times|n_retrys|notification_alarm_types|notification_emailaddress|notification_emailaddress_on_alarm|notification_emailaddress_on_failure|notification_emailaddress_on_success|notification_emailaddress_on_terminated|notification_id|notification_msg|notification_template|owner|permission|priority|profile|ps_dest_format|ps_dest_type|ps_email_log|ps_email_web_report|ps_operator_id|ps_process_name|ps_process_type|ps_restarts|ps_run_cntrl_id|ps_server_name|ps_skip_parm_updates|rename_job|resources|run_calendar|run_external|run_window|scp_command|scp_create_targetdir|scp_delete_sourcedir|scp_delete_sourcefile|scp_local_dir|scp_local_name|scp_local_user|scp_protocol|scp_remote_dir|scp_remote_name|scp_server|scp_server_name|scp_server_port|scp_target_os|scp_transfer_direction|scp_transfer_mode|scp_user|send_notification|service_desk|start_mins|start_times|std_err_file|std_out_file|std_in_file|success_codes|svc_desk_attr|svcdesk_imp|svcdesk_pri|svcdesk_sev|term_run_time|timezone|update_job|update_machine|update_resource|watch_file|watch_file_change_type|watch_file_change_value|watch_file_min_size|watch_file_poll_interval|watch_file_recursive|watch_file_type|watch_file_win_user|watch_interval|watch_no_change)\\b(?=:)",
           "name": "keyword.control.jil"
         },
         {
@@ -85,14 +113,14 @@
           "name": "keyword.operator.jil"
         },
         {
-          "match": "((?<=command:)\\s+.*|(?<=insert_job:|update_job:|delete_job:|delete_box:)\\s+[^\\s]+|(?<=box_name:)\\s+[^\\s]+)",
+          "match": "((?<=command:)\\s+.*|(?<=insert_job:|update_job:|delete_job:|delete_box:|rename_job:)\\s+[^\\s]+|(?<=box_name:)\\s+[^\\s]+)",
           "name": "variable.parameter.jil"
         }
       ]
     },
     "strings": {
       "begin": "\"",
-      "end": "\"",
+      "end": "\"|$",
       "name": "string.quoted.double.jil",
       "patterns": [
         {
